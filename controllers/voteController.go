@@ -11,8 +11,8 @@ import (
 func Vote(c *gin.Context) {
 	userID := c.Param("user_id")
 	var input struct {
+		UserID      uint `json:"user_id"`
 		CandidateID uint `json:"candidate_id"`
-		DivisionID  uint `json:"division_id"`
 	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
@@ -26,7 +26,7 @@ func Vote(c *gin.Context) {
 	}
 
 	vote := models.UserCandidate{
-		UserID:      input.CandidateID,
+		UserID:      input.UserID,
 		CandidateID: input.CandidateID,
 	}
 

@@ -1,65 +1,43 @@
+// controllers/authController.go
+
 package controllers
 
 import (
 	"e-vote/config"
 	"e-vote/models"
-	"e-vote/utils"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
+// Login function to handle user authentication
 func Login(c *gin.Context) {
 	var input models.User
+
+	// Bind the incoming JSON request to the input struct
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
 
+	// Look for a user in the database with the given identity_number
 	var user models.User
 	if err := config.GetDB().Where("IdentityNumber = ?", input.IdentityNumber).First(&user).Error; err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid identity number or password"})
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
 	}
 
-	// Log the user data to verify it's being retrieved correctly
-	fmt.Println("User retrieved:", user)
-
-	// Temporarily remove bcrypt check for plain-text password comparison
+	// Check if the passwords match
 	if user.Password != input.Password {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid identity number or password"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
 
-	// Generate the token if login is successful
-	token, err := utils.GenerateToken(user.ID, user.Name, fmt.Sprint(user.RoleID))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"token": token})
-}
-
-func CreateUser(c *gin.Context) {
-	var input models.User
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
-
-	// // Hash the password before saving it to the database
-	// if err := input.HashPassword(); err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not hash password"})
-	// 	return
-	// }
-
-	// Save the user to the database
-	if err := config.GetDB().Create(&input).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
+	// If the credentials match, return success
+	c.JSON(http.StatusOK, gin.H{"message": "Login successful", "user": user})
 }

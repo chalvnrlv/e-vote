@@ -1,9 +1,10 @@
 package models
 
+// User represents the user structure for our application
 type User struct {
-	ID             uint   `gorm:"primaryKey"`
-	Name           string `gorm:"column:Name"`
-	IdentityNumber string `gorm:"column:IdentityNumber"`
-	Password       string `gorm:"column:Password"`
-	RoleID         int    `gorm:"column:RoleID"`
+	ID             int    `json:"id" gorm:"primaryKey"`
+	Name           string `json:"name"`
+	IdentityNumber string `json:"identity_number" gorm:"column:IdentityNumber"` // Map to database column 'IdentityNumber'
+	Password       string `json:"password"`
+	RoleID         int    `json:"role_id" gorm:"column:RoleID"`
 }

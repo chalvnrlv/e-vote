@@ -4,7 +4,7 @@ CREATE TABLE Division (
     PRIMARY KEY (ID)
 );
 
-CREATE TABLE Candidate (
+CREATE TABLE Candidates (
     ID int NOT NULL AUTO_INCREMENT,
     Name varchar(50) NOT NULL,
     Division_ID int NOT NULL,
@@ -24,6 +24,7 @@ CREATE TABLE Users (
 CREATE TABLE User_Candidate (
     User_ID int NOT NULL,
     Candidate_ID int NOT NULL,
+    Image BLOB,
     PRIMARY KEY (User_ID, Candidate_ID),
     FOREIGN KEY (User_ID) REFERENCES User(ID),
     FOREIGN KEY (Candidate_ID) REFERENCES Candidate(ID)
