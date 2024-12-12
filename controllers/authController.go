@@ -1,10 +1,9 @@
-// controllers/authController.go
-
 package controllers
 
 import (
 	"e-vote/config"
 	"e-vote/models"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,6 +37,20 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// If the credentials match, return success
-	c.JSON(http.StatusOK, gin.H{"message": "Login successful", "user": user})
+	// Check user role and redirect accordingly
+	var redirectURL string
+	if user.RoleID == 1 {
+		// Admin role
+		redirectURL = "/admin/dashboard"
+	} else {
+		// Regular user role
+		redirectURL = "/vote/" + fmt.Sprintf("%d", user.ID)
+	}
+
+	// Return success response with user data and redirect URL
+	c.JSON(http.StatusOK, gin.H{
+		"message":     "Login successful",
+		"user":        user,
+		"redirectURL": redirectURL,
+	})
 }

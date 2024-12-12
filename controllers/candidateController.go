@@ -48,8 +48,8 @@ func GetCandidates(c *gin.Context) {
 	var candidatesWithDivisions []struct {
 		ID         uint   `json:"id"`
 		Name       string `json:"name"`
-		DivisionID uint   `json:"division_id"` // This must match the SQL column alias
-		Division   string `json:"division"`
+		DivisionID uint   `json:"division_id"`
+		Division   string `json:"division"` // 'division' is already populated here
 	}
 
 	// Using raw SQL to perform the JOIN and ensure correct aliases
@@ -57,7 +57,7 @@ func GetCandidates(c *gin.Context) {
         SELECT 
             candidates.ID, 
             candidates.Name, 
-            candidates.Division_ID AS division_id, -- Ensure this alias matches the struct field
+            candidates.Division_ID AS division_id, 
             divisions.Division
         FROM candidates
         LEFT JOIN divisions ON candidates.Division_ID = divisions.ID

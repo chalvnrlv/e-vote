@@ -1,6 +1,5 @@
 package models
 
-// User represents the user structure for our application
 type User struct {
 	ID             int    `json:"id" gorm:"primaryKey"`
 	Name           string `json:"name"`

@@ -11,9 +11,9 @@ import (
 )
 
 func Vote(c *gin.Context) {
-	// Extract division ID and user ID from URL
+	// Extract division ID and user ID from URL parameters
 	divisionIDStr := c.Param("divisions.id")
-	userIDStr := c.Param("users.id") // userID will be a string
+	userIDStr := c.Param("users.id")
 
 	// Convert divisionID and userID from string to uint
 	divisionID, err := strconv.ParseUint(divisionIDStr, 10, 32)
@@ -22,13 +22,13 @@ func Vote(c *gin.Context) {
 		return
 	}
 
-	userID, err := strconv.ParseUint(userIDStr, 10, 32) // Base 10, bit size 32
+	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
-	// Parse Candidate_ID from request body
+	// Parse Candidate_ID from the request body
 	var voteData struct {
 		CandidateID uint `json:"Candidate_ID"`
 	}
@@ -54,7 +54,7 @@ func Vote(c *gin.Context) {
 	// Check if the user has already voted in this division
 	var existingVote models.UserCandidate
 	if err := config.DB.Where("user_id = ? AND candidate_id IN (?)", userID, config.DB.Model(&models.Candidate{}).Where("division_id = ?", divisionID).Select("id")).First(&existingVote).Error; err == nil {
-		// If there's an existing vote, user cannot vote again in the same division
+		// If there's an existing vote, the user cannot vote again in the same division
 		c.JSON(http.StatusConflict, gin.H{"error": "You have already voted in this division"})
 		return
 	}
@@ -76,7 +76,6 @@ func Vote(c *gin.Context) {
 		"candidate_id": voteData.CandidateID,
 	})
 }
-
 func GetUserVotes(c *gin.Context) {
 	userIDStr := c.Param("users.id")
 
