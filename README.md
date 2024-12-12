@@ -4,6 +4,7 @@
 The E-Vote project is an online voting system built with the Gin framework in Go. It provides features for user management, candidate management, division-based elections, and voting with results per division. The project also incorporates CORS middleware for secure cross-origin requests.
 
 ## Model Database
+![Screenshot 2024-12-08 195550](https://github.com/user-attachments/assets/632b78a5-8028-4332-a79a-c83cd9c170fb)
 
 ---
 
@@ -87,6 +88,7 @@ CORS middleware ensures secure interaction between the backend API and the front
    npm install
    npm start
    ```
+6. Access the API at `http://localhost:3000`.
 
 ---
 
