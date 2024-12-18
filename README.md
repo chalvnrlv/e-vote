@@ -134,5 +134,6 @@ CORS middleware ensures secure interaction between the backend API and the front
 This project is licensed under the [MIT License](LICENSE).
 
 ## Contributors
-- [Chalvin Reza](https://github.com/chalvnrlv)
+- [Chalvin Reza Farrel](https://github.com/chalvnrlv)
+- [Syarif Sanad](https://github.com/k08e24bryant)
 
